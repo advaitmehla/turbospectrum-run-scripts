@@ -14,7 +14,7 @@ The `script-RCB.com-XXX*` are template CSH scripts for TS runs which contain dum
 |   TVEL  |   Turbulence velocity - models are created only for 1.0 km/s, but this can be modified in TS (?)  |
 |   LOGG  |   log(g) value - can only be 0.5 and 1.0 (restricted by models), and GH 2009 uses 0.5   |
 
-A few of these are new, while most of them are renamed versions of the old variables in order to make them more easy to understand. 
+A few of these are new, while most of them are renamed versions of the old variables in order to make them more easy to understand. Just doing `sh loop.sh` will create the run scripts over the specified parameter range in the directory for the star which it also creates.
 
 The other major change I have done is to use a Bash script to do these substitutions - at least on my machine, the CSH substituting script was extremely slow for what it actually does. This Bash version is instant. It also includes computation of the isotope fractions on the fly using `awk`, instead of relying on a look-up table. This means that arbitrary isotopic ratios can be provided and it computes the fractions on the fly without any other user input. This might have to be modified in the future to include O17 abundances - as of now that is 0.
 
