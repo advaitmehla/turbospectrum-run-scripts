@@ -1,0 +1,139 @@
+#!/bin/csh -f
+
+date
+set NN=`echo N_FILE`
+if ( $NN == 94 ) then
+set mpath=/home/advait/Desktop/research/rcb-project/synthetic-spectra/models/MARCS-AtmModels-Binary/Models-Nov2015-PolyAtomic--BinaryFiles/
+# For temperature < 6000 K we use the PolyAtomic atmosphericmodels made by Kjell in 2015
+else
+set mpath=/home/advait/Desktop/research/rcb-project/synthetic-spectra/models/MARCS-AtmModels-Binary/Models-Nov2015-PolyAtomic--BinaryFiles/
+endif
+
+cd $mpath
+set dpath=/home/advait/Desktop/research/rcb-project/synthetic-spectra/
+
+if ( $NN == 94 ) then
+set list=`ls {5500,5750}*gLOGGz+0.00m1.0t05ptiply`
+else
+set list=`ls {5500,5750}*gLOGGz+0.00m1.0t05pti*nN_FILE`
+endif
+
+cd ../../../ 
+
+foreach MODEL ($list)
+
+#set Cabu = 8.656
+#set Nabu = 7.78
+#set Oabu = 8.66
+ 
+set lam_min    = '22000'
+set lam_max    = '26000'
+
+set deltalam   = 'DLAM'
+set METALLIC   = '     0.000'
+set TURBVEL    = 'TVEL'
+set SUFFIX     = _${lam_min}-${lam_max}_xit${TURBVEL}_O1618-ORAT_C1213-CRAT_N-N_FILE_O-O_FILE.specv15
+set result     = ${MODEL}${SUFFIX}
+
+#
+# ABUNDANCES FROM THE MODEL ARE NOT USED !!!
+
+/home/advait/Desktop/research/rcb-project/Turbospectrum_NLTE/exec-ifx/babsma_lu << EOF
+'LAMBDA_MIN:'  '${lam_min}'
+'LAMBDA_MAX:'  '${lam_max}'
+'LAMBDA_STEP:' '${deltalam}'
+'MODELINPUT:' '$mpath/${MODEL}'
+'MARCS-FILE:' '.true.'
+'MODELOPAC:' '${dpath}/contopac/${MODEL}opac'
+'METALLICITY:'    '${METALLIC}'
+'ALPHA/Fe   :'    '0.0'
+'HELIUM     :'    '0.0'
+'R-PROCESS  :'    '0.00'
+'S-PROCESS  :'    '0.00'
+'INDIVIDUAL ABUNDANCES:'   '5'
+1 7.50
+2 11.5
+6 9.5 
+7 NABUND
+8 OABUND
+'XIFIX:' 'T'
+$TURBVEL
+EOF
+
+########################################################################
+# Isotopic fraction  in hard in the Code :
+# 6.012  0.9890000    
+# 6.013  1.1000000E-02
+# 7.014  0.9963400    
+# 7.015  3.6599999E-03
+# 8.016  0.9976200    
+# 8.017  3.8000001E-04
+# 8.018  2.0000001E-03
+
+
+/home/advait/Desktop/research/rcb-project/Turbospectrum_NLTE/exec-ifx/bsyn_lu <<EOF
+'LAMBDA_MIN:'     '${lam_min}'
+'LAMBDA_MAX:'     '${lam_max}'
+'LAMBDA_STEP:'    '${deltalam}'
+'INTENSITY/FLUX:' 'Flux'
+'COS(THETA)    :' '1.00'
+'ABFIND        :' '.false.'
+'MODELOPAC:' '${dpath}/contopac/${MODEL}opac'
+'RESULTFILE :' '${dpath}/syntspec/${result}'
+'METALLICITY:'    '${METALLIC}'
+'ALPHA/Fe   :'    '0.00'
+'HELIUM     :'    '0.0'
+'R-PROCESS  :'    '0.00'
+'S-PROCESS  :'    '0.00'
+'INDIVIDUAL ABUNDANCES:'   '5'
+1 7.50
+2 11.5
+6 9.5 
+7 NABUND
+8 OABUND
+'ISOTOPES : ' '5'
+6.012  C12FRAC
+6.013  C13FRAC
+8.016  O16FRAC
+8.017  0.000
+8.018  O18FRAC
+'NFILES   :' '30'
+linelists/VALD-TurboFormat/All-Molecules-CN-C2-CH-CO_OH_SiH_MgH_Removed/VALD-lines_5000-25000_VALDformat_FromExtract-Stellar_Teff-5500_Detect-Thresh-0.01__RCBAbund-N94_TurboFormat.lines
+linelists/VALD-TurboFormat/All-Molecules-CN-C2-CH-CO_OH_SiH_MgH_Removed/VALD-lines_3000-5000_VALDformat_FromExtract-Stellar_Teff-5500_Detect-Thresh-0.01__RCBAbund-N94_TurboFormat.lines
+linelists/B.Plez/C12N15R_3000-25000_moreRamlines.list
+linelists/B.Plez/C12N14V130710_3000-25000.list
+linelists/B.Plez/C12N14R_3000-25000_moreRamlines.list
+linelists/B.Plez/C12H-vibrot-bsyn_1-1000000.list
+linelists/B.Plez/C12C13-S_3000-25000.list
+linelists/B.Plez/C12C13-P_3000-25000.list
+linelists/B.Plez/C12C13-BR_3000-25000.list
+linelists/B.Plez/C12C12-S_3000-25000.list
+linelists/B.Plez/C12C12-P_3000-25000.list
+linelists/B.Plez/C12C12-BR_3000-25000.list
+linelists/B.Plez/46CO_3000-25000.list
+linelists/B.Plez/38CO_3000-25000.list
+linelists/B.Plez/37CO_3000-25000.list
+linelists/B.Plez/36CO_3000-25000.list
+linelists/B.Plez/28CO_3000-25000.list
+linelists/B.Plez/27CO_3000-25000.list
+linelists/B.Plez/26CO_3000-25000.list
+linelists/B.Plez/13CH.list
+linelists/B.Plez/12CH.list
+linelists/B.Plez/C13N15V130710_3000-25000.list
+linelists/B.Plez/C13N15R_3000-25000_moreRamlines.list
+linelists/B.Plez/C13N14V130710_3000-25000.list
+linelists/B.Plez/C13N14R_3000-25000_moreRamlines.list
+linelists/B.Plez/C13H-vibrot-bsyn_1-1000000.list
+linelists/B.Plez/C13C13-S_3000-25000.list
+linelists/B.Plez/C13C13-P_3000-25000.list
+linelists/B.Plez/C13C13-BR_3000-25000.list
+linelists/B.Plez/C12N15V130710_3000-25000.list
+'SPHERICAL:'  'F'
+  30
+  300.00
+  15
+  1.30
+EOF
+########################################################################
+date
+end
