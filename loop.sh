@@ -1,13 +1,15 @@
 # !/bin/bash
-
-dir="HD137613"
+curr_path=$(pwd)
+dir="scripts"
 # if dir doesn't exist, create it
 if [ ! -d "$dir" ]; then
   mkdir "$dir"
 fi
-list=$(ls script-RCB.com-XXX*)
-nlist="85 94"  # N abundance
-olist="88"
+
+template_path=/media/advait/DATA/research/rcb-project/synthetic-spectra/scripts/Original-script-XXX
+list=$(ls $template_path/script-RCB.com-XXX*)
+nlist="85"  # N abundance
+olist="80"
 cratlist="20"  # C12/C13 ratio
 oratlist="0.5" # O16/O18 ratio
 
@@ -38,10 +40,11 @@ for file in $list; do
           outputfile="script-RCB.com_O1618-${orat}_C1213-${crat}_N-${n_file}_O-${o_file}_${temp}"
 
           # Process and replace variables directly with awk in one step
-          awk -v orat="$orat" -v crat="$crat" -v n_file="$n_file" -v Nabund="$Nabund" -v C12frac="$C12frac" -v C13frac="$C13frac" -v O16frac="$O16frac" -v O18frac="$O18frac" -v dlam="$dlam"  -v tvel="$tvel" -v logg="$logg" -v o_file="$o_file" -v Oabund="$Oabund" '{
+          awk -v orat="$orat" -v crat="$crat" -v n_file="$n_file" -v Nabund="$Nabund" -v C12frac="$C12frac" -v C13frac="$C13frac" -v O16frac="$O16frac" -v O18frac="$O18frac" -v dlam="$dlam"  -v tvel="$tvel" -v logg="$logg" -v o_file="$o_file" -v Oabund="$Oabund" -v currpath="$curr_path" '{
               gsub("ORAT", orat); gsub("CRAT", crat); gsub("N_FILE", n_file); gsub("NABUND", Nabund);
               gsub("C12FRAC", C12frac); gsub("C13FRAC", C13frac); gsub("O16FRAC", O16frac); gsub("O18FRAC", O18frac);
               gsub("DLAM", dlam); gsub("TVEL", tvel); gsub("LOGG", logg); gsub("OABUND", Oabund); gsub("O_FILE", o_file);
+              gsub("CURR_PATH", currpath);
               print
           }' "$file" > "$dir/$outputfile"
 

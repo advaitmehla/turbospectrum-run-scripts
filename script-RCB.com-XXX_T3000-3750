@@ -10,7 +10,7 @@ set mpath=/home/advait/Desktop/research/rcb-project/synthetic-spectra/models/MAR
 endif
 
 cd $mpath
-set dpath=/home/advait/Desktop/research/rcb-project/synthetic-spectra/
+set dpath=CURR_PATH
 
 if ( $NN == 94 ) then
 set list=`ls {3000,3500,3800}*gLOGGz+0.00m1.0t05ptiply*`
